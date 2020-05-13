@@ -19,8 +19,8 @@ class QuestionsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $products = Products::paginate(10);
-        return view('products/list', ['products' => $products]);
+        $questions = Questions::paginate(10);
+        return view('questions/list', ['questions' => $questions]);
     }
 
     /**
@@ -29,7 +29,7 @@ class QuestionsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        return view('products/form', ['title' => 'Create Product', 'button' => 'save', 'products' => []]);
+        return view('questions/form', ['title' => 'Create Question', 'button' => 'save', 'questions' => []]);
     }
 
     /**
@@ -69,8 +69,8 @@ class QuestionsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
-        $products = Products::findOrFail($id);
-        return view('products/form', ['products' => $products, 'title' => 'Update Product', 'button' => 'Update']);
+        $questions = Questions::findOrFail($id);
+        return view('questions/form', ['questions' => $questions, 'title' => 'Update Question', 'button' => 'Update']);
     }
 
     /**
@@ -91,7 +91,7 @@ class QuestionsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-        $topic = Subject::findOrFail($id);
+        $topic = Questions::findOrFail($id);
         $topic->delete();
         return redirect('subjects')->with('success', 'Question is successfully Deleted');
     }

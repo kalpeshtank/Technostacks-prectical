@@ -9,10 +9,10 @@ class Questions extends Model {
 
     use SoftDeletes;
 
-    protected $fillable = ['question_text', 'code_snippet', 'answer_explanation', 'more_info_link', 'topic_id'];
+    protected $fillable = ['question_text', 'code_snippet', 'answer_explanation', 'more_info_link', 'subject_id'];
 
     public function subjet() {
-        return $this->belongsTo(Subject::class, 'topic_id')->withTrashed();
+        return $this->belongsTo(Subject::class, 'subject_id')->withTrashed();
     }
 
     public function options() {

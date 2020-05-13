@@ -13,7 +13,8 @@
                 <thead>
                     <tr>
                         <!--<th>#</th>-->
-                        <th>Title</th>
+                        <th>Subject</th>
+                        <th>Question Text</th>
                         <th>Created at</th>
                         <th>Actions</th>
                     </tr>
@@ -21,7 +22,8 @@
                 <tbody>
                     @forelse ($questions as $que)
                     <tr>
-                        <td>{{ $que->title }}</td>
+                        <td>{{ $que->subjet->title or '' }}</td>
+                        <td>{!! $que->question_text !!}</td>
                         <td>{{ date('d-m-Y', strtotime($que->created_at)) }}</td>
                         <td>
                             <form action="{{ route('questions.destroy', $que->id) }}" method="post">

@@ -17,6 +17,6 @@ Route::get('/', function () {
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('subjects', 'SubjectController');
-Route::resource('questions', 'ProductsController');
+Route::resource('questions', 'QuestionsController');
 Route::resource('questions-options', 'OrderDeliverysController');
 Route::resource('users-results', 'OrderDeliverysController');
