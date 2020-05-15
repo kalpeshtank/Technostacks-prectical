@@ -12,7 +12,7 @@ class QuestionsOptions extends Model {
     protected $fillable = ['option', 'correct', 'question_id'];
 
     public function question() {
-        return $this->belongsTo(Question::class, 'question_id')->withTrashed();
+        return $this->belongsTo(Questions::class, 'question_id')->withTrashed();
     }
 
 }

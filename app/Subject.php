@@ -12,7 +12,7 @@ class Subject extends Model {
     protected $fillable = ['title'];
 
     public function questions() {
-        return $this->hasMany(Question::class, 'topic_id')->withTrashed();
+        return $this->hasMany(Questions::class, 'subject_id')->withTrashed();
     }
 
 }

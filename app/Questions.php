@@ -9,14 +9,14 @@ class Questions extends Model {
 
     use SoftDeletes;
 
-    protected $fillable = ['question_text', 'code_snippet', 'answer_explanation', 'more_info_link', 'subject_id'];
+    protected $fillable = ['question_text', 'code_snippet', 'answer_explanation', 'subject_id'];
 
     public function subjet() {
         return $this->belongsTo(Subject::class, 'subject_id')->withTrashed();
     }
 
     public function options() {
-        return $this->hasMany(QuestionsOption::class, 'question_id')->withTrashed();
+        return $this->hasMany(QuestionsOptions::class, 'question_id')->withTrashed();
     }
 
 }

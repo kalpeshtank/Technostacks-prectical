@@ -5,8 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Subject;
 use Validator;
+use Illuminate\Support\Facades\Auth;
 
 class SubjectController extends Controller {
+
+    public function __construct() {
+        $this->middleware('Admin');
+    }
 
     public $successStatus = 200;
     public $errorStatus = 422;
@@ -89,8 +94,8 @@ class SubjectController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-        $topic = Subject::findOrFail($id);
-        $topic->delete();
+        $subjects = Subject::findOrFail($id);
+        $subjects->delete();
         return redirect('subjects')->with('success', 'Subjects is successfully Deleted');
     }
 

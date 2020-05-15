@@ -115,6 +115,14 @@ table thead tr th {
     -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
     filter: alpha(opacity=40);
 }
+.test-option-true {
+    background-color: green !important;
+    color: white;
+}
+.test-option-false {
+    background-color: red !important;
+    color: white;
+}
 /*Additional properties for button version
  iOS requires the button element instead of an anchor tag.
  If you want the anchor version, it requires `href="#"`.*/
@@ -251,7 +259,18 @@ button.toast-close-button {
     -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=40);
     filter: alpha(opacity=40);
 }
-
+div.code_snippet {
+    margin: 15px 0 5px 0;
+    padding: 7px;
+    font-family: "Courier New";
+    border: 1px dashed #CCC;
+    background-color: #F7F7F7;
+    white-space: pre;
+}
+.form-row:before {
+    display: table;
+    content: " ";
+}
 /*Responsive Design*/
 @media all and (max-width: 240px) {
     #toast-container > div {

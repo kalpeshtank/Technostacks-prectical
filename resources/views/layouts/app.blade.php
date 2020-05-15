@@ -60,7 +60,15 @@
                                 <a class="nav-link" href="{{ url('questions-options') }}">Questions Options</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url('users-results') }}">Users Results</a>
+                                <a class="nav-link" href="{{ url('results') }}">Users Results</a>
+                            </li>
+                            @endif
+                            @if(Auth::user()->user_type=='User')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url('tests') }}">New Test</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url('results') }}">My Results</a>
                             </li>
                             @endif
                             <li class="nav-item dropdown">

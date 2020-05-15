@@ -6,9 +6,14 @@ use Illuminate\Http\Request;
 use App\Questions;
 use App\QuestionsOptions;
 use App\Subject;
+use Illuminate\Support\Facades\Auth;
 use Validator;
 
 class QuestionsController extends Controller {
+
+    public function __construct() {
+        $this->middleware('Admin');
+    }
 
     public $successStatus = 200;
     public $errorStatus = 422;
@@ -29,7 +34,7 @@ class QuestionsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        return view('questions/form', ['title' => 'Create Question', 'button' => 'save', 'questions' => []]);
+        return view('questions/form', ['title' => 'Create Question', 'button' => 'save', 'questions' => [], 'subject' => Subject::all()]);
     }
 
     /**
@@ -40,13 +45,28 @@ class QuestionsController extends Controller {
      */
     public function store(Request $request) {
         $validator = Validator::make($request->all(), [
-                    'title' => 'required',
+                    'subject' => 'required',
+                    'question_text' => 'required',
+                    'option1' => 'required',
+                    'option2' => 'required',
+                    'option3' => 'required',
+                    'option4' => 'required',
+                    'correct' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json(['status' => 'error', 'massage' => $validator->errors()->first(), 'data' => []], $this->errorStatus);
         } else {
-            $subject_data = array('title' => $request->title);
-            Subject::updateOrCreate(['id' => $request->id], $subject_data);
+            $question = Questions::create(['subject_id' => $request->subject, 'question_text' => $request->question_text, 'code_snippet' => $request->code_snippet, 'answer_explanation' => $request->answer_explanation]);
+            foreach ($request->input() as $key => $value) {
+                if (strpos($key, 'option') !== false && $value != '') {
+                    $status = $request->input('correct') == $key ? 1 : 0;
+                    QuestionsOptions::create([
+                        'question_id' => $question->id,
+                        'option' => $value,
+                        'correct' => $status
+                    ]);
+                }
+            }
             $massge = $request->id ? 'Subjects Updated successfully.' : 'Subjects Added successfully.';
             return response()->json(['status' => 'success', 'massage' => $massge, 'data' => []], $this->successStatus);
         }
@@ -70,7 +90,7 @@ class QuestionsController extends Controller {
      */
     public function edit($id) {
         $questions = Questions::findOrFail($id);
-        return view('questions/form', ['questions' => $questions, 'title' => 'Update Question', 'button' => 'Update']);
+        return view('questions/form', ['questions' => $questions, 'subject' => Subject::all(), 'title' => 'Update Question', 'button' => 'Update']);
     }
 
     /**
@@ -81,7 +101,17 @@ class QuestionsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-        //
+        $validator = Validator::make($request->all(), [
+                    'subject' => 'required',
+                    'question_text' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'massage' => $validator->errors()->first(), 'data' => []], $this->errorStatus);
+        } else {
+            $question = Questions::findOrFail($id);
+            $question->update(['subject_id' => $request->subject, 'question_text' => $request->question_text, 'code_snippet' => $request->code_snippet, 'answer_explanation' => $request->answer_explanation]);
+            return response()->json(['status' => 'success', 'massage' => 'Subjects Updated successfully.', 'data' => []], $this->successStatus);
+        }
     }
 
     /**
@@ -91,9 +121,13 @@ class QuestionsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-        $topic = Questions::findOrFail($id);
-        $topic->delete();
-        return redirect('subjects')->with('success', 'Question is successfully Deleted');
+        $questions = Questions::findOrFail($id);
+        $options = QuestionsOptions::where(['question_id' => $questions->id])->get();
+        foreach ($options as $opt) {
+            $opt->delete();
+        }
+        $questions->delete();
+        return redirect('questions')->with('success', 'Question is successfully Deleted');
     }
 
 }

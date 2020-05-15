@@ -22,7 +22,7 @@
                 <tbody>
                     @forelse ($questions as $que)
                     <tr>
-                        <td>{{ $que->subjet->title or '' }}</td>
+                        <td>{{ isset($que->subjet)?$que->subjet->title:'' }}</td>
                         <td>{!! $que->question_text !!}</td>
                         <td>{{ date('d-m-Y', strtotime($que->created_at)) }}</td>
                         <td>

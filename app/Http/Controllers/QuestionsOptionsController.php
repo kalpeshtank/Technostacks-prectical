@@ -3,8 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\QuestionsOptions;
+use App\Questions;
+use Illuminate\Support\Facades\Auth;
+use Validator;
 
 class QuestionsOptionsController extends Controller {
+
+    public function __construct() {
+        $this->middleware('Admin');
+    }
+
+    public $successStatus = 200;
+    public $errorStatus = 422;
 
     /**
      * Display a listing of the resource.
@@ -12,8 +23,8 @@ class QuestionsOptionsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $products = Products::paginate(10);
-        return view('products/list', ['products' => $products]);
+        $questionsOptions = QuestionsOptions::paginate(10);
+        return view('options/list', ['questionsOptions' => $questionsOptions]);
     }
 
     /**
@@ -22,7 +33,7 @@ class QuestionsOptionsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create() {
-        return view('products/form', ['title' => 'Create Product', 'button' => 'save', 'products' => []]);
+        return view('options/form', ['title' => 'Create Options', 'button' => 'save', 'options' => []]);
     }
 
     /**
@@ -31,11 +42,17 @@ class QuestionsOptionsController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProductsRequest $request) {
-        $product_data = array('product_name' => $request->product_name);
-        Products::updateOrCreate(['id' => $request->id], $product_data);
-        $massge = $request->id ? 'Product Updated successfully.' : 'Product Added successfully.';
-        return redirect('products')->with('success', $massge);
+    public function store(Request $request) {
+        $validator = Validator::make($request->all(), [
+                    'option' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['status' => 'error', 'massage' => $validator->errors()->first(), 'data' => []], $this->errorStatus);
+        } else {
+            $QuestionsOptions = QuestionsOptions::findOrFail($request->id);
+            $QuestionsOptions->update(['option' => $request->option, 'correct' => $request->correct]);
+            return response()->json(['status' => 'success', 'massage' => 'Subjects Updated successfully.', 'data' => []], $this->successStatus);
+        }
     }
 
     /**
@@ -55,8 +72,9 @@ class QuestionsOptionsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
-        $products = Products::findOrFail($id);
-        return view('products/form', ['products' => $products, 'title' => 'Update Product', 'button' => 'Update']);
+        $QuestionsOptions = QuestionsOptions::findOrFail($id);
+        $Questions = Questions::all();
+        return view('options/form', ['options_details' => $QuestionsOptions, 'questions' => $Questions, 'title' => 'Update Options', 'button' => 'Update']);
     }
 
     /**
@@ -77,10 +95,9 @@ class QuestionsOptionsController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-        $data = Products::findOrFail($id);
-        $data->is_active = !$data->is_active;
-        $data->update();
-        return redirect('products')->with('success', 'Product is successfully Updated');
+        $Options = QuestionsOptions::findOrFail($id);
+        $Options->delete();
+        return redirect('questions-options')->with('success', 'Options is successfully Updated');
     }
 
 }

@@ -18,7 +18,6 @@ class CreateQuestionsTable extends Migration {
             $table->text('question_text')->nullable();
             $table->text('code_snippet')->nullable();
             $table->text('answer_explanation')->nullable();
-            $table->string('more_info_link')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->index(['deleted_at']);
